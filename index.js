@@ -10,7 +10,8 @@ module.exports = function tokml(geojson, options) {
         name: 'name',
         description: 'description',
         simplestyle: false,
-        timestamp: 'timestamp'
+        timestamp: 'timestamp',
+        extendedData: true
     };
 
     return '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -54,7 +55,7 @@ function feature(options, styleHashesArray) {
         return styleDefinition + tag('Placemark',
             name(_.properties, options) +
             description(_.properties, options) +
-            extendeddata(_.properties) +
+            extendeddata(_.properties, options) +
             timestamp(_.properties, options) +
             geometryString +
             styleReference);
@@ -174,8 +175,10 @@ function linearring(_) {
 }
 
 // ## Data
-function extendeddata(_) {
-    return tag('ExtendedData', pairs(_).map(data).join(''));
+function extendeddata(_, options) {
+    if (options.extendedData)
+        return tag('ExtendedData', pairs(_).map(data).join(''));
+    return;
 }
 
 function data(_) {
